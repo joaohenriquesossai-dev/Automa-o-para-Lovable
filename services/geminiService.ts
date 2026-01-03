@@ -1,0 +1,1 @@
+// Arquivo removido para simplificar o MVP e evitar erros de API

@@ -1,0 +1,1 @@
+// Arquivo consolidado no App.tsx
