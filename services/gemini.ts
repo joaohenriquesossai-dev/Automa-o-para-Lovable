@@ -1,7 +1,8 @@
 
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
-const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Initialize GoogleGenAI using process.env.API_KEY directly
+const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzeText = async (text: string): Promise<string> => {
   const ai = getAI();
@@ -13,6 +14,7 @@ export const analyzeText = async (text: string): Promise<string> => {
       topP: 0.95,
     }
   });
+  // Access .text property directly
   return response.text || "No response received.";
 };
 
@@ -25,8 +27,9 @@ export const analyzeImage = async (base64Data: string, prompt: string): Promise<
     },
   };
   const textPart = { text: prompt };
+  // Using gemini-3-flash-preview for vision analysis (Basic Text Task with image input)
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-image',
+    model: 'gemini-3-flash-preview',
     contents: { parts: [imagePart, textPart] },
   });
   return response.text || "I couldn't analyze the image.";
@@ -54,6 +57,7 @@ export const chatStream = async (message: string, onChunk: (chunk: string) => vo
   });
   const result = await chat.sendMessageStream({ message });
   for await (const chunk of result) {
+    // Cast chunk to GenerateContentResponse and access .text property
     const text = (chunk as GenerateContentResponse).text;
     if (text) onChunk(text);
   }

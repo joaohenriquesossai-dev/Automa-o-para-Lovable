@@ -21,7 +21,7 @@ const Navbar = () => {
           </div>
           <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-300">
             <button onClick={() => scrollTo('beneficios')} className="hover:text-white transition-colors">Benefícios</button>
-            <button onClick={() => scrollTo('como-funciona')} className="hover:text-white transition-colors">Como Funciona</button>
+            <button onClick={() => scrollTo('tutorial')} className="hover:text-white transition-colors">Como Funciona</button>
             <button onClick={() => scrollTo('preco')} className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full transition-all font-bold">Garantir Acesso</button>
           </div>
           <button onClick={() => scrollTo('preco')} className="md:hidden px-4 py-2 bg-indigo-600 text-white text-xs rounded-full font-bold uppercase">Comprar</button>
@@ -56,9 +56,68 @@ const Hero = () => {
             <button onClick={() => scrollTo('preco')} className="w-full sm:w-auto px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-black rounded-2xl transition-all transform hover:scale-105 shadow-2xl shadow-indigo-600/20">
               GARANTIR MINHA VAGA
             </button>
-            <button onClick={() => scrollTo('como-funciona')} className="w-full sm:w-auto px-10 py-5 bg-white/5 hover:bg-white/10 text-white text-xl font-bold rounded-2xl border border-white/10 transition-all">
-              VER COMO FUNCIONA
+            <button onClick={() => scrollTo('tutorial')} className="w-full sm:w-auto px-10 py-5 bg-white/5 hover:bg-white/10 text-white text-xl font-bold rounded-2xl border border-white/10 transition-all">
+              VER PASSO A PASSO
             </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const VideoSection = () => {
+  return (
+    <section id="tutorial" className="py-24 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 relative z-10">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Veja a Mágica Acontecendo</h2>
+          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+            Assista ao tutorial de 2 minutos e veja como é simples ativar sua fonte de créditos ilimitados.
+          </p>
+        </div>
+        
+        <div className="max-w-5xl mx-auto relative group">
+          {/* Brilho de fundo do player */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+          
+          <div className="relative bg-[#0d0d0d] rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl">
+            {/* Mockup do Player */}
+            <div className="aspect-video w-full bg-black flex items-center justify-center relative">
+              {/* Espaço para o seu vídeo (Substitua o src abaixo) */}
+              <iframe 
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ" // SUBSTITUA POR SEU LINK DE VÍDEO
+                title="Tutorial LovablePro"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+            
+            <div className="p-6 md:p-8 bg-white/[0.02] border-t border-white/10 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold flex-shrink-0">1</div>
+                <div>
+                  <h4 className="font-bold text-white">Copie o Script</h4>
+                  <p className="text-xs text-gray-500">Acesso imediato após a compra.</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold flex-shrink-0">2</div>
+                <div>
+                  <h4 className="font-bold text-white">Cole no Console</h4>
+                  <p className="text-xs text-gray-500">Funciona em qualquer navegador.</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold flex-shrink-0">3</div>
+                <div>
+                  <h4 className="font-bold text-white">Colha os Créditos</h4>
+                  <p className="text-xs text-gray-500">Automático e em tempo real.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -88,6 +147,8 @@ const App: React.FC = () => {
       <main>
         <Hero />
         
+        <VideoSection />
+
         {/* Pain Point */}
         <section id="como-funciona" className="py-24 bg-white/[0.02]">
           <div className="max-w-7xl mx-auto px-4">
