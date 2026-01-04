@@ -1,7 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import GeminiLab from './components/GeminiLab.tsx';
-import { chatStream } from './services/gemini.ts';
+import React, { useState, useEffect } from 'react';
 
 // ========================================================
 // CONFIGURAÇÕES E LINKS
@@ -14,127 +12,6 @@ const SUPABASE_ANON_KEY = "sb_publishable_vXP2EU9mKXwKXicuI0vfdA_k8iZvV2e";
 // ========================================================
 // COMPONENTES AUXILIARES
 // ========================================================
-
-const FloatingAI = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{role: 'user' | 'model', text: string}[]>([]);
-  const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages]);
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    const userMsg = input;
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
-    setIsTyping(true);
-    
-    let fullResponse = '';
-    try {
-      await chatStream(`O usuário está na landing page do LovablePro (automação de créditos para Lovable.dev). Responda de forma curta e persuasiva: ${userMsg}`, (chunk) => {
-        fullResponse += chunk;
-        setMessages(prev => {
-          const last = prev[prev.length - 1];
-          if (last?.role === 'model') {
-            return [...prev.slice(0, -1), { role: 'model', text: fullResponse }];
-          }
-          return [...prev, { role: 'model', text: fullResponse }];
-        });
-      });
-    } catch (e) {
-      setMessages(prev => [...prev, { role: 'model', text: "Desculpe, estou processando muitas requisições. Como posso te ajudar com o LovablePro?" }]);
-    } finally {
-      setIsTyping(false);
-    }
-  };
-
-  return (
-    <div className="fixed bottom-6 right-6 z-[110]">
-      {isOpen ? (
-        <div className="w-80 md:w-96 h-[500px] bg-[#0d0d0d] border border-white/10 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="p-5 bg-indigo-600 flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-white">Assistente LovablePro</span>
-            </div>
-            <button onClick={() => setIsOpen(false)} className="text-white/50 hover:text-white">✕</button>
-          </div>
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-hide">
-            {messages.length === 0 && (
-              <div className="text-center py-10">
-                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Como posso te ajudar a escalar no Lovable hoje?</p>
-              </div>
-            )}
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[80%] p-3 rounded-2xl text-xs font-medium leading-relaxed ${m.role === 'user' ? 'bg-indigo-600 text-white' : 'bg-white/5 text-gray-300 border border-white/5'}`}>
-                  {m.text}
-                </div>
-              </div>
-            ))}
-            {isTyping && <div className="text-[10px] text-indigo-400 animate-pulse font-bold uppercase tracking-widest">IA pensando...</div>}
-          </div>
-          <div className="p-4 border-t border-white/5 flex gap-2">
-            <input 
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Pergunte sobre créditos..."
-              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
-            />
-            <button onClick={handleSend} className="p-2 bg-indigo-600 rounded-xl text-white">➔</button>
-          </div>
-        </div>
-      ) : (
-        <button 
-          onClick={() => setIsOpen(true)}
-          className="w-16 h-16 bg-indigo-600 rounded-full shadow-2xl shadow-indigo-600/40 flex items-center justify-center text-white hover:scale-110 transition-all group active:scale-95"
-        >
-          <svg className="w-8 h-8 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
-        </button>
-      )}
-    </div>
-  );
-};
-
-const SalesNotification = () => {
-  const [visible, setVisible] = useState(false);
-  const [data, setData] = useState({ name: '', city: '' });
-  const names = ["Gabriel", "Lucas", "Mariana", "Ricardo", "Ana", "Felipe", "Juliana", "Marcos", "Beatriz", "Vinícius"];
-  const cities = ["São Paulo", "Rio de Janeiro", "Curitiba", "Belo Horizonte", "Salvador", "Lisboa", "Florianópolis", "Brasília"];
-
-  useEffect(() => {
-    const showRandom = () => {
-      const randomName = names[Math.floor(Math.random() * names.length)];
-      const randomCity = cities[Math.floor(Math.random() * cities.length)];
-      setData({ name: randomName, city: randomCity });
-      setVisible(true);
-      setTimeout(() => setVisible(false), 5000);
-    };
-    const interval = setInterval(showRandom, 18000 + Math.random() * 10000);
-    const timeout = setTimeout(showRandom, 4000);
-    return () => { clearInterval(interval); clearTimeout(timeout); };
-  }, []);
-
-  if (!visible) return null;
-
-  return (
-    <div className="fixed bottom-6 left-6 z-[100] bg-[#0d0d0d] border border-white/10 p-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce-slow max-w-[300px] backdrop-blur-md">
-      <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold shrink-0 shadow-lg shadow-indigo-600/20">{data.name[0]}</div>
-      <div>
-        <p className="text-[11px] text-white font-bold leading-tight">{data.name} de {data.city}</p>
-        <p className="text-[9px] text-green-500 uppercase font-black tracking-widest mt-1 flex items-center gap-1">
-          <span className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span>
-          Acabou de garantir a licença
-        </p>
-      </div>
-    </div>
-  );
-};
 
 const Navbar = ({ onBackToHome, scrollTo }: { onBackToHome: () => void, scrollTo: (id: string) => void }) => {
   return (
@@ -150,8 +27,6 @@ const Navbar = ({ onBackToHome, scrollTo }: { onBackToHome: () => void, scrollTo
           <div className="hidden md:flex items-center space-x-8 text-[9px] font-black uppercase tracking-[0.2em] text-gray-500">
             <button onClick={() => scrollTo('problema')} className="hover:text-purple-400 transition-colors">O Problema</button>
             <button onClick={() => scrollTo('tecnologia')} className="hover:text-purple-400 transition-colors">A Solução</button>
-            <button onClick={() => scrollTo('lab')} className="hover:text-purple-400 transition-colors">O Lab</button>
-            <button onClick={() => scrollTo('depoimentos')} className="hover:text-purple-400 transition-colors">Feedback</button>
             <button onClick={() => scrollTo('faq')} className="hover:text-purple-400 transition-colors">Dúvidas</button>
             <button onClick={() => scrollTo('preco')} className="px-6 py-2.5 bg-indigo-600 text-white rounded-full transition-all hover:bg-indigo-500 font-black shadow-lg shadow-indigo-600/20">
               OBTER LICENÇA
@@ -173,7 +48,7 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
         <span className={`text-2xl transition-transform duration-300 ${isOpen ? 'rotate-45 text-red-500' : 'text-indigo-500'}`}>+</span>
       </button>
       <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 pb-6 opacity-100' : 'max-h-0 opacity-0'}`}>
-        <p className="text-gray-500 text-base leading-relaxed font-medium">{answer}</p>
+        <p className="text-gray-500 text-base leading-relaxed font-medium whitespace-pre-wrap">{answer}</p>
       </div>
     </div>
   );
@@ -188,7 +63,6 @@ const SuccessPage = () => {
   const [isValidated, setIsValidated] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState('');
-  const [showConfetti, setShowConfetti] = useState(false);
 
   const handleValidate = async () => {
     const cleanCpf = cpf.replace(/\D/g, ''); 
@@ -201,8 +75,7 @@ const SuccessPage = () => {
       });
       const data = await res.json();
       if (data?.length > 0) {
-        setShowConfetti(true);
-        setTimeout(() => setIsValidated(true), 1500);
+        setIsValidated(true);
       } else {
         setError('CPF não encontrado no banco de dados.');
       }
@@ -222,23 +95,13 @@ const SuccessPage = () => {
     return v;
   };
 
-  if (showConfetti && !isValidated) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-black">
-        <div className="text-6xl animate-bounce">🎉</div>
-        <h2 className="text-white font-black uppercase italic text-3xl mt-4 animate-pulse tracking-tighter">ACESSO CONFIRMADO!</h2>
-        <p className="text-indigo-400 text-[10px] font-black tracking-[0.4em] mt-2">PREPARANDO SEU PAINEL...</p>
-      </div>
-    );
-  }
-
   if (!isValidated) {
     return (
       <div className="min-h-screen pt-32 flex items-center justify-center px-4 bg-grid">
         <div className="max-w-md w-full bg-[#0d0d0d] border border-white/10 rounded-[3rem] p-10 md:p-14 shadow-3xl text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600"></div>
           <div className="w-16 h-16 bg-indigo-600/20 rounded-2xl flex items-center justify-center mx-auto mb-8 text-indigo-400">
-             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 00-2 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
           </div>
           <h2 className="text-2xl font-black text-white uppercase italic mb-2 tracking-tight">Portal do Aluno</h2>
           <p className="text-gray-500 text-[9px] mb-8 uppercase tracking-[0.2em] font-black px-4 leading-relaxed">Sincronização instantânea após o pagamento aprovado.</p>
@@ -246,7 +109,7 @@ const SuccessPage = () => {
             <div className="relative">
               <input 
                 type="text" 
-                placeholder="000.000.000-00"
+                placeholder=""
                 value={cpf}
                 onChange={(e) => setCpf(formatCPF(e.target.value))}
                 className="w-full bg-black border border-white/10 rounded-2xl py-6 px-6 text-white text-center font-mono text-2xl focus:border-indigo-500 outline-none transition-all placeholder:text-gray-800"
@@ -254,9 +117,8 @@ const SuccessPage = () => {
               />
             </div>
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl animate-shake">
+              <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
                 <p className="text-red-500 text-[10px] font-black uppercase tracking-wider">{error}</p>
-                <a href={LINK_WHATSAPP_SUPORTE} target="_blank" className="text-white text-[9px] underline font-bold mt-2 block uppercase tracking-widest">Suporte no WhatsApp</a>
               </div>
             )}
             <button onClick={handleValidate} disabled={isVerifying} className="w-full py-6 bg-indigo-600 text-white font-black rounded-2xl uppercase tracking-[0.2em] text-sm hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/20 flex items-center justify-center gap-3 disabled:opacity-50">
@@ -296,12 +158,9 @@ const SuccessPage = () => {
 // PÁGINA INICIAL (LANDING PAGE)
 // ========================================================
 
-const LandingPage = ({ scrollTo }: { scrollTo: (id: string) => void }) => {
+const LandingPage = ({ scrollTo, onGoToSuccess }: { scrollTo: (id: string) => void, onGoToSuccess: () => void }) => {
   return (
     <>
-      <SalesNotification />
-      <FloatingAI />
-      
       {/* Hero Section */}
       <section className="pt-32 pb-24 px-4 text-center bg-grid relative overflow-hidden">
         <div className="absolute top-10 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-600/20 blur-[150px] pointer-events-none animate-pulse"></div>
@@ -319,12 +178,12 @@ const LandingPage = ({ scrollTo }: { scrollTo: (id: string) => void }) => {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <button onClick={() => scrollTo('preco')} className="w-full sm:w-auto px-14 py-8 bg-indigo-600 text-white font-black rounded-[2rem] text-2xl shadow-[0_25px_60px_rgba(79,70,229,0.4)] hover:-translate-y-2 transition-all uppercase tracking-widest active:scale-95">LIBERAR MEU ACESSO</button>
-            <div className="flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/5 rounded-2xl">
-               <div className="flex -space-x-2">
-                  {[1,2,3].map(i => <div key={i} className="w-6 h-6 bg-gray-800 border-2 border-black rounded-full"></div>)}
-               </div>
-               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">+582 Alunos Ativos</span>
-            </div>
+            <button 
+              onClick={onGoToSuccess} 
+              className="w-full sm:w-auto px-10 py-5 border border-white/10 hover:bg-white/5 text-gray-400 font-black rounded-[1.5rem] text-sm transition-all uppercase tracking-widest active:scale-95"
+            >
+              Já comprei
+            </button>
           </div>
         </div>
       </section>
@@ -365,15 +224,6 @@ const LandingPage = ({ scrollTo }: { scrollTo: (id: string) => void }) => {
         </div>
       </section>
 
-      {/* Lab Section (Novidade!) */}
-      <section id="lab" className="py-20 bg-black">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-           <h2 className="text-5xl md:text-7xl font-black text-white mb-4 uppercase italic tracking-tighter">DEMO DE IA.</h2>
-           <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.5em] mb-16">Teste nossa tecnologia integrada</p>
-           <GeminiLab />
-        </div>
-      </section>
-
       {/* Pricing Section */}
       <section id="preco" className="py-32 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-96 bg-purple-600/10 blur-[180px] pointer-events-none"></div>
@@ -399,9 +249,18 @@ const LandingPage = ({ scrollTo }: { scrollTo: (id: string) => void }) => {
         <div className="max-w-4xl mx-auto px-4">
            <h2 className="text-4xl md:text-6xl font-black text-white mb-16 text-center uppercase italic tracking-tighter">DÚVIDAS.</h2>
            <div className="bg-[#0d0d0d] border border-white/5 rounded-[4rem] p-8 md:p-12 shadow-xl">
-              <FAQItem question="O script pode banir minha conta?" answer="O algoritmo simula perfeitamente o comportamento humano, com delays variáveis. Taxa de banimento: 0% em 500+ usuários." />
-              <FAQItem question="Como recebo o acesso?" answer="Aprovação instantânea (PIX/Cartão). O link chega no e-mail e você valida o CPF aqui no site." />
-              <FAQItem question="Funciona no celular?" answer="O script é uma extensão para navegadores desktop (Chrome, Edge, Brave)." />
+              <FAQItem 
+                question="O script pode banir minha conta?" 
+                answer="O algoritmo utiliza apenas o link de convitede sua conta, sem nada mais. Taxa de banimento: 0% em 400+ usuários." 
+              />
+              <FAQItem 
+                question="Como recebo o acesso?" 
+                answer="Aprovação instantânea (PIX/Cartão). Você será redirecionado para a tela de autenticação que pedirá o CPF que foi utilizado na compra. Insira-o e receba o download." 
+              />
+              <FAQItem 
+                question="Funciona no celular?" 
+                answer="O script é uma extensão para o navegador desktop Edge" 
+              />
            </div>
         </div>
       </section>
@@ -440,7 +299,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#050505] text-gray-100 font-['Plus_Jakarta_Sans'] selection:bg-indigo-500/30 selection:text-white">
       <Navbar onBackToHome={() => setView('home')} scrollTo={scrollTo} />
-      <main>{view === 'home' ? <LandingPage scrollTo={scrollTo} /> : <SuccessPage />}</main>
+      <main>{view === 'home' ? <LandingPage scrollTo={scrollTo} onGoToSuccess={() => setView('success')} /> : <SuccessPage />}</main>
       <footer className="py-24 border-t border-white/5 text-center opacity-50">
         <div className="max-w-7xl mx-auto px-4">
            <div className="text-2xl font-black text-white italic mb-10 tracking-tighter uppercase">LOVABLE<span className="text-indigo-500">PRO</span></div>
