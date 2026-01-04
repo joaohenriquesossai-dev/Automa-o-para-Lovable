@@ -28,7 +28,7 @@ const Navbar = ({ onBackToHome, scrollTo }: { onBackToHome: () => void, scrollTo
             <button onClick={() => scrollTo('problema')} className="hover:text-purple-400 transition-colors">O Problema</button>
             <button onClick={() => scrollTo('tecnologia')} className="hover:text-purple-400 transition-colors">A Solução</button>
             <button onClick={() => scrollTo('faq')} className="hover:text-purple-400 transition-colors">Dúvidas</button>
-            <button onClick={() => scrollTo('preco')} className="px-6 py-2.5 bg-indigo-600 text-white rounded-full transition-all hover:bg-indigo-500 font-black shadow-lg shadow-indigo-600/20">
+            <button onClick={() => scrollTo('preco')} className="px-6 py-2.5 bg-indigo-600 text-white rounded-full transition-all hover:bg-indigo-500 font-black shadow-lg shadow-indigo-600/40">
               OBTER LICENÇA
             </button>
           </div>
@@ -77,10 +77,10 @@ const SuccessPage = () => {
       if (data?.length > 0) {
         setIsValidated(true);
       } else {
-        setError('CPF não encontrado no banco de dados.');
+        setError('CPF NÃO ENCONTRADO NO BANCO DE DADOS.');
       }
     } catch (err) {
-      setError('Erro de conexão. Verifique sua internet.');
+      setError('ERRO DE CONEXÃO. VERIFIQUE SUA INTERNET.');
     } finally {
       setIsVerifying(false);
     }
@@ -101,10 +101,12 @@ const SuccessPage = () => {
         <div className="max-w-md w-full bg-[#0d0d0d] border border-white/10 rounded-[3rem] p-10 md:p-14 shadow-3xl text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600"></div>
           <div className="w-16 h-16 bg-indigo-600/20 rounded-2xl flex items-center justify-center mx-auto mb-8 text-indigo-400">
-             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 00-2 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
           </div>
           <h2 className="text-2xl font-black text-white uppercase italic mb-2 tracking-tight">Portal do Aluno</h2>
-          <p className="text-gray-500 text-[9px] mb-8 uppercase tracking-[0.2em] font-black px-4 leading-relaxed">Sincronização instantânea após o pagamento aprovado.</p>
+          <p className="text-gray-500 text-[10px] mb-8 uppercase tracking-[0.2em] font-black px-4 leading-relaxed">
+            Insira o CPF utilizado no momento da compra para liberar o seu acesso.
+          </p>
           <div className="space-y-6">
             <div className="relative">
               <input 
