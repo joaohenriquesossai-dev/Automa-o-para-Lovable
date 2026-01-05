@@ -28,7 +28,12 @@ const SectionLabel = ({ children }: { children?: React.ReactNode }) => (
 const UrgencyBanner = () => (
   <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 py-2 px-4 text-center shadow-lg border-b border-white/10 animate-pulse-slow">
     <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.15em] text-white">
-      🔥 Oferta de Lançamento: De <span className="line-through opacity-70">R$ 497,00</span> por apenas <span className="text-yellow-300 drop-shadow-sm">R$ 197,00</span> | <span className="bg-white/20 px-2 py-0.5 rounded ml-1">Restam apenas 9 vagas</span>
+      {"🔥 Oferta de Lançamento: De "}
+      <span className="line-through opacity-70">R$ 497,00</span>
+      {" por apenas "}
+      <span className="text-yellow-300 drop-shadow-sm">R$ 197,00</span>
+      {" | "}
+      <span className="bg-white/20 px-2 py-0.5 rounded ml-1">Restam apenas 9 vagas</span>
     </p>
   </div>
 );
@@ -219,7 +224,7 @@ const LandingPage = ({ scrollTo, onGoToSuccess }: any) => (
                 </div>
                 <div className="space-y-6">
                    <div className="bg-black/50 p-6 rounded-2xl border border-white/5">
-                      <p className="text-indigo-400 font-mono text-sm mb-2">>> initializing_automator.sh</p>
+                      <p className="text-indigo-400 font-mono text-sm mb-2">{" >> "} initializing_automator.sh</p>
                       <p className="text-white font-mono text-sm">[SUCCESS] Connection established with Lovable Engine</p>
                       <p className="text-white font-mono text-sm">[INFO] Credit Bypass: ACTIVE</p>
                       <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
@@ -544,7 +549,10 @@ const App: React.FC = () => {
     if (element) {
        if (view !== 'home') {
           setView('home');
-          setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 100);
+          setTimeout(() => {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
        } else {
           element.scrollIntoView({ behavior: 'smooth' });
        }
