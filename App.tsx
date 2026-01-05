@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 // ========================================================
@@ -8,7 +7,7 @@ const SEU_LINK_KIWIFY = "https://pay.kiwify.com.br/GPsLBgH";
 const LINK_WHATSAPP_SUPORTE = "https://wa.me/5500000000000"; 
 const SUPABASE_URL = "https://kcohmzqukmkoutnjadgu.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_vXP2EU9mKXwKXicuI0vfdA_k8iZvV2e";
-const LINK_ONEDRIVE_PASTA = "https://onedrive.live.com/?id=%2Fpersonal%2Ff68a9c476d0e6856%2FDocuments%2FDOWNLOAD&viewid=5250e9b2%2D3a9e%2D420d%2D83fb%2D2e7170ed3be3&view=0"; 
+const LINK_ONEDRIVE_PASTA = "https://1drv.ms/u/c/f68a9c476d0e6856/IQCD7tp24Bc4RpMraMAnS42QAcZQK8I8jOcDLPdADQ2D4uI"; 
 
 // ========================================================
 // COMPONENTES ATÔMICOS DE DESIGN
