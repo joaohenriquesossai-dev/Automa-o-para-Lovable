@@ -491,13 +491,12 @@ const LandingPage = ({ scrollTo, onGoToSuccess }: any) => (
             <p className="text-xl md:text-2xl text-indigo-100/70 font-bold uppercase tracking-widest mb-16 max-w-3xl mx-auto">
               Junte-se a todos os desenvolvedores que já automatizaram seus créditos e escalaram seus projetos ao nível profissional.
             </p>
-            <a 
-              href={SEU_LINK_KIWIFY} 
-              target="_blank" 
+            <button 
+              onClick={() => scrollTo('preco')} 
               className="inline-block px-20 py-10 bg-white text-black text-3xl font-black rounded-[2.5rem] hover:bg-black hover:text-white transition-all transform hover:scale-110 uppercase tracking-tighter shadow-2xl"
             >
               Começar minha Automação
-            </a>
+            </button>
           </div>
         </div>
       </div>
