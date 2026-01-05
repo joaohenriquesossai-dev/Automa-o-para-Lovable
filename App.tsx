@@ -7,7 +7,7 @@ const SEU_LINK_KIWIFY = "https://pay.kiwify.com.br/GPsLBgH";
 const LINK_WHATSAPP_SUPORTE = "https://wa.me/5500000000000"; 
 const SUPABASE_URL = "https://kcohmzqukmkoutnjadgu.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_vXP2EU9mKXwKXicuI0vfdA_k8iZvV2e";
-const LINK_ONEDRIVE_PASTA = "https://1drv.ms/u/c/f68a9c476d0e6856/IQCD7tp24Bc4RpMraMAnS42QAcZQK8I8jOcDLPdADQ2D4uI"; 
+const LINK_ONEDRIVE_PASTA = "https://1drv.ms/u/c/f68a9c476d0e6856/IQCD7tp24Bc4RpMraMAnS42QAXcTCSVIYcXJJoGx6Gu_k_c"; 
 
 // ========================================================
 // COMPONENTES ATÔMICOS DE DESIGN
