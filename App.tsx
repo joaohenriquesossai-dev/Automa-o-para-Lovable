@@ -208,7 +208,7 @@ const LandingPage = ({ scrollTo, onGoToSuccess }: any) => (
             <div className="absolute inset-0 rounded-[2rem] border-2 border-white scale-105 opacity-0 group-hover:opacity-100 transition-all"></div>
           </button>
           <button onClick={onGoToSuccess} className="px-10 py-6 text-gray-500 font-black uppercase text-sm tracking-widest hover:text-white transition-colors border border-white/10 rounded-[2rem] hover:bg-white/5">
-            Área do Cliente
+            JÁ COMPREI
           </button>
         </div>
       </div>
