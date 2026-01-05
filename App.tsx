@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // ========================================================
 // CONFIGURAÇÕES E LINKS
@@ -40,7 +40,7 @@ const UrgencyBanner = () => (
 
 const Navbar = ({ onBackToHome, scrollTo }: { onBackToHome: () => void, scrollTo: (id: string) => void }) => (
   <nav className="fixed top-8 md:top-10 left-0 right-0 z-50 bg-black/60 backdrop-blur-md border-b border-white/5">
-    <div className="max-w-7xl mx-auto px-6 lg:px-12">
+    <div className="max-w-7xl mx-auto px-6 md:px-12">
       <div className="flex justify-between items-center h-20">
         <div className="flex items-center space-x-3 cursor-pointer" onClick={onBackToHome}>
           <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl flex items-center justify-center font-black text-white shadow-lg shadow-indigo-500/20">L</div>
@@ -48,16 +48,20 @@ const Navbar = ({ onBackToHome, scrollTo }: { onBackToHome: () => void, scrollTo
             LOVABLE<span className="text-indigo-500">PRO</span>
           </span>
         </div>
-        <div className="hidden lg:flex items-center space-x-10 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+        
+        {/* Menu Centralizado - Agora visível a partir de 'md' (768px+) */}
+        <div className="hidden md:flex items-center space-x-6 lg:space-x-10 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
           <button onClick={() => scrollTo('metodologia')} className="hover:text-white transition-colors">A Lógica</button>
           <button onClick={() => scrollTo('passos')} className="hover:text-white transition-colors">Como Funciona</button>
           <button onClick={() => scrollTo('beneficios')} className="hover:text-white transition-colors">Vantagens</button>
           <button onClick={() => scrollTo('faq')} className="hover:text-white transition-colors">FAQ</button>
-          <button onClick={() => scrollTo('preco')} className="px-8 py-3 bg-white text-black rounded-full transition-all hover:bg-indigo-500 hover:text-white font-black">
+          <button onClick={() => scrollTo('preco')} className="px-6 lg:px-8 py-3 bg-white text-black rounded-full transition-all hover:bg-indigo-500 hover:text-white font-black">
             DESBLOQUEAR ACESSO
           </button>
         </div>
-        <button onClick={() => scrollTo('preco')} className="lg:hidden px-5 py-2.5 bg-indigo-600 text-white text-[10px] rounded-full font-black uppercase">Comprar</button>
+
+        {/* Botão Mobile - Agora oculto a partir de 'md' */}
+        <button onClick={() => scrollTo('preco')} className="md:hidden px-5 py-2.5 bg-indigo-600 text-white text-[10px] rounded-full font-black uppercase">Comprar</button>
       </div>
     </div>
   </nav>
@@ -372,7 +376,7 @@ const LandingPage = ({ scrollTo, onGoToSuccess }: any) => (
            <TrustCard 
               icon="🚀"
               title="Suporte Rápido"
-              description="Resposta em até 2 horas no plano Premium. Nosso time técnico está sempre à disposição para ajudar."
+              description="Resposta em até 2 horas no plano Premium. Nosso team técnico está sempre à disposição para ajudar."
               color="blue"
            />
         </div>
@@ -538,17 +542,45 @@ const FAQItem = ({ question, answer }: any) => {
 };
 
 // ========================================================
-// APP WRAPPER
+// APP WRAPPER (COM LOGICA DE ROTEAMENTO)
 // ========================================================
 
 const App: React.FC = () => {
   const [view, setView] = useState<'home' | 'success'>('home');
 
+  // Sincroniza estado com a URL no carregamento inicial e quando o usuario usa botões do navegador
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname;
+      if (path === '/success') {
+        setView('success');
+      } else {
+        setView('home');
+      }
+    };
+
+    // Executa no mount
+    handleLocationChange();
+
+    // Ouve mudanças de histórico (voltar/avançar do navegador)
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
+  const navigateTo = (newView: 'home' | 'success') => {
+    setView(newView);
+    const path = newView === 'success' ? '/success' : '/';
+    window.history.pushState({}, '', path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const scrollTo = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
        if (view !== 'home') {
+          // Se estiver na tela de sucesso, primeiro volta pra home e depois rola
           setView('home');
+          window.history.pushState({}, '', '/');
           setTimeout(() => {
             const el = document.getElementById(id);
             if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -573,10 +605,10 @@ const App: React.FC = () => {
         }
       `}</style>
       <UrgencyBanner />
-      <Navbar onBackToHome={() => setView('home')} scrollTo={scrollTo} />
+      <Navbar onBackToHome={() => navigateTo('home')} scrollTo={scrollTo} />
       <main>
         {view === 'home' ? (
-          <LandingPage scrollTo={scrollTo} onGoToSuccess={() => setView('success')} />
+          <LandingPage scrollTo={scrollTo} onGoToSuccess={() => navigateTo('success')} />
         ) : (
           <SuccessPage />
         )}
